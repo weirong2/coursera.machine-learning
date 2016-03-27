@@ -62,30 +62,66 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
+%size(Theta1)      = 25 401
+%size(Theta2)      = 10 26
+%size(X)           = 5000 400
+%size(y)           = 5000 1
+%input_layer_size  = 400
+%hidden_layer_size = 25
+%num_labels        = 10
 
+% Add ones to the X data matrix
+a1 = [ones(m, 1) X];      %size(a1) = 5000 401
+z2 = a1 * Theta1';        %size(z2) = 5000 25
+a2 = sigmoid(z2);         %size(a2) = 5000 25
+a2 = [ones(m,1) a2];      %size(a2) = 5000 26
+z3 = a2 * Theta2';        %size(z3) = 5000 10
+a3 = sigmoid(z3);         %size(a3) = 5000 10
 
+vy = zeros(m,num_labels); %size(vy) = 5000 10
+for i = 1 : m
+  vy(i,y(i)) = 1;
+end
 
+for i = 1 : m,
+ J += (-1*vy(i,:)*log(a3(i,:)') - (1-vy(i,:))*log(1-a3(i,:)'));
+end
+J = J / m;
 
+rTheta1 = Theta1(:,2:end);    %size(rTheta1) = 25 400
+rTheta2 = Theta2(:,2:end);    %size(rTheta2) = 10 25
 
+r1 = 0;
+for j = 1 : hidden_layer_size 
+  r1 += rTheta1(j,:) * rTheta1(j,:)';
+end
 
+r2 = 0;
+for j = 1 : num_labels
+  r2 += rTheta2(j,:) * rTheta2(j,:)';
+end
 
+J = J + lambda / (2*m) * (r1 + r2);
 
+%--------------------------------------------------------------
 
-
-
-
-
-
-
-
-
-
+DELTA2 = 0;
+DELTA1 = 0;
+for i = 1 : m
+  delta3 = a3(i,:) - vy(i,:);                            %size(delta3) = 1 10
+  delta2 = delta3 * rTheta2 .* sigmoidGradient(z2(i,:)); %size(delta2) = 1 25
+  DELTA2 += delta3' * a2(i,:);                           %size(DELTA2) = 10 26
+  DELTA1 += delta2' * a1(i,:);                           %size(DELTA1) = 25 401
+end
+Theta2_grad = DELTA2 / m + lambda / m * Theta2;           %size(DELTA2) = 10 26
+Theta2_grad(:,1) = 1 / m * (DELTA2(:,1));
+Theta1_grad = DELTA1 / m + lambda / m * Theta1;           %size(DELTA1) = 25 401
+Theta1_grad(:,1) = 1 / m * (DELTA1(:,1));
 % -------------------------------------------------------------
 
 % =========================================================================
 
 % Unroll gradients
-grad = [Theta1_grad(:) ; Theta2_grad(:)];
-
+grad = [Theta1_grad(:) ; Theta2_grad(:)];               %size(grad) = 10285 1
 
 end
