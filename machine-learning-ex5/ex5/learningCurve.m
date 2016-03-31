@@ -53,9 +53,17 @@ error_val   = zeros(m, 1);
 
 % ---------------------- Sample Solution ----------------------
 
+%size(X) = 12 2
+%size(y) = 12 1
+%size(Xval) = 21 2
+%size(yval) = 21 1
 
+for i = 1 : m
+  [theta_i] = trainLinearReg(X(1:i,:), y(1:i), lambdai = 1);                             % Get theta_i on i training set, use lambda = 1 to train theta_i
+  [error_train(i), grad] = linearRegCostFunction(X(1:i,:), y(1:i), theta_i, lambda = 0); % Calculate train error on theta_i + i number of traing set, lambda should be 0
 
-
+  [error_val(i), grad] = linearRegCostFunction(Xval, yval, theta_i, lambda = 0);         % Calculate cv error on theta_i + entire cv set, lambda should be 0 in error calculation
+end
 
 
 
