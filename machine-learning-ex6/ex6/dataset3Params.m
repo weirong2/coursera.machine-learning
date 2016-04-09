@@ -22,10 +22,26 @@ sigma = 0.3;
 %  Note: You can compute the prediction error using 
 %        mean(double(predictions ~= yval))
 %
-
-
-
-
+err = 100; %give a big value to err and save the C & sigma with smallest err after calculation and comparision
+array = [0.01; 0.03; 0.1; 0.3; 1; 3; 10; 30];
+for i = 1 : length(array),
+  for j = 1 : length(array),
+    model= svmTrain(X, y, array(i), @(x1, x2) gaussianKernel(x1, x2, array(j)));
+    predictions = svmPredict(model, Xval);  %size(predictions) = 200 1
+    newerr = mean(double(predictions ~= yval));
+    %array(i)
+    %array(j)
+    %newerr
+    if newerr < err,
+      err = newerr;
+      C = array(i);
+      sigma = array(j);
+    end
+  end
+end
+%C
+%sigma
+%err
 
 
 

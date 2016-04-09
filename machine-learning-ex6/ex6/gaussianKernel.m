@@ -15,9 +15,11 @@ sim = 0;
 %               sigma
 %
 %
-
-
-
+s = 0;
+for i = 1 : length(x1)
+  s += (x1(i) - x2(i))^2;
+end
+sim = exp(-1 * s / (2 * sigma^2));
 
 
 
