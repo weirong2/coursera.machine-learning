@@ -26,11 +26,21 @@ centroids = zeros(K, n);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
+%size(X) = 300 2
+%size(idx) = 300 1
+%size(centroids) = 3 2
 
-
-
-
-
+for i = 1 : K,
+  count = 0;
+  summary = zeros(1,n);
+  for j = 1 : m,
+    if idx(j) == i;
+      count++;
+      summary += X(j,:);
+    end
+  end
+  centroids(i,:) = summary / count;
+end
 
 
 % =============================================================
